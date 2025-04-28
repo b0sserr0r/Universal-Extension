@@ -1,0 +1,542 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/UIPDebugConfigurations",
+    "definitions": {
+        "UIPDebugConfigurations": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "properties": {
+                    "$ref": "#/definitions/properties"
+                },
+                "api": {
+                    "$ref": "#/definitions/api"
+                }
+            },
+            "required": [
+                "api"
+            ],
+            "title": "UIPDebugConfigurations"
+        },
+        "api": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "extension_start": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/extension_start_item"
+                    }
+                },
+                "dynamic_choice_commands": {
+                    "$ref": "#/definitions/dynamic_choice_commands"
+                }
+            },
+            "minProperties": 1,
+            "markdownDescription": "Used to specify the extension APIs that can currently be debugged"
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "agent": {
+                    "$ref": "#/definitions/agent"
+                }
+            },
+            "minProperties": 1,
+            "markdownDescription": "Used to configure agent related properties"
+        },
+        "agent": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "log_level": {
+                    "$ref": "#/definitions/AgentLogLevel"
+                },
+                "otel": {
+                    "$ref": "#/definitions/Otel"
+                },
+                "netname": {
+                    "$ref": "#/definitions/Netname"
+                }
+            }
+        },
+        "extension_start_item": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/name"
+                },
+                "uip": {
+                    "$ref": "#/definitions/uip"
+                },
+                "log_level": {
+                    "$ref": "#/definitions/LogLevel"
+                },
+                "runtime_dir": {
+                    "$ref": "#/definitions/runtime_dir"
+                },
+                "env_vars": {
+                    "$ref": "#/definitions/env_vars"
+                },
+                "fields": {
+                    "$ref": "#/definitions/extension_start_fields"
+                },
+                "security": {
+                    "$ref": "#/definitions/Security"
+                }
+            },
+            "required": [
+                "fields",
+                "name"
+            ]
+        },
+        "extension_start_fields": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "host": {
+                    "$ref": "#/definitions/host"
+                },
+                "credential": {
+                    "$ref": "#/definitions/credential"
+                },
+                "function": {
+                    "$ref": "#/definitions/function"
+                },
+                "data_center": {
+                    "$ref": "#/definitions/data_center"
+                },
+                "esx_host": {
+                    "$ref": "#/definitions/esx_host"
+                },
+                "vm_list": {
+                    "$ref": "#/definitions/vm_list"
+                }
+            },
+            "required": [
+                "host",
+                "credential",
+                "function",
+                "data_center",
+                "esx_host",
+                "vm_list"
+            ]
+        },
+        "dynamic_choice_commands": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "data_center": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/data_center_item"
+                    }
+                },
+                "esx_host": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/esx_host_item"
+                    }
+                },
+                "vm_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vm_list_item"
+                    }
+                }
+            },
+            "minProperties": 1
+        },
+        "uip": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "is_triggered": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "variables": {
+                    "type": "object",
+                    "propertyNames": {
+                        "pattern": "^.+"
+                    },
+                    "minProperties": 1,
+                    "minLength": 1,
+                    "markdownDescription": "Variables to pass as part of self.uip.task_variables"
+                }
+            }
+        },
+        "name": {
+            "type": "string",
+            "markdownDescription": "Unique identifier for test class"
+        },
+        "LogLevel": {
+            "type": "string",
+            "oneOf": [
+                {
+                    "const": "Inherited"
+                },
+                {
+                    "const": "Trace"
+                },
+                {
+                    "const": "Debug"
+                },
+                {
+                    "const": "Info"
+                },
+                {
+                    "const": "Warn"
+                },
+                {
+                    "const": "Error"
+                },
+                {
+                    "const": "Severe"
+                }
+            ],
+            "markdownDescription": "**Must be one of**:\n- Inherited\n- Trace\n- Debug\n- Info\n- Warn\n- Error\n- Severe",
+            "default": "Inherited"
+        },
+        "AgentLogLevel": {
+            "type": "string",
+            "oneOf": [
+                {
+                    "const": "Trace"
+                },
+                {
+                    "const": "Debug"
+                },
+                {
+                    "const": "Info"
+                },
+                {
+                    "const": "Warn"
+                },
+                {
+                    "const": "Error"
+                }
+            ],
+            "markdownDescription": "**Must be one of**:\n- Trace \n- Debug\n- Info\n- Warn\n- Error\n\n**Default**: Info"
+        },
+        "Otel": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable_tracing": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Whether to enable tracing for the debugger and the Extension worker process"
+                },
+                "export_metrics": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Whether to enable metrics for the Extension worker process"
+                },
+                "trace_endpoint": {
+                    "type": "string",
+                    "default": "http://localhost:4318",
+                    "pattern": "^(http)://.*$",
+                    "markdownDescription": "The OTLP/HTTP url used to export debugger and Extension trace data"
+                },
+                "metrics_endpoint": {
+                    "type": "string",
+                    "default": "http://localhost:4318",
+                    "pattern": "^(http)://.*$",
+                    "markdownDescription": "The OTLP/HTTP url used to export Extension metrics data"
+                },
+                "service_name": {
+                    "type": "string",
+                    "default": "vscode-uip-debugger",
+                    "markdownDescription": "The value of the 'service.name' attribute used to identify the VSCode UIP Debugger in traces",
+                    "minLength": 1
+                },
+                "uip_service_name": {
+                    "type": "string",
+                    "default": "uip/\\${extension_name}",
+                    "markdownDescription": "The value of the 'service.name' attribute used to identify the Extension worker process in traces and metrics. If the value contains '${extension_name}', it will be replaced with the actual extension name defined in extension.yml.",
+                    "minLength": 1
+                }
+            },
+            "required": [],
+            "markdownDescription": "Used to configure Opentelemetry for the VSCode UIP Debugger and the Extension worker process."
+        },
+        "Netname": {
+            "type": "string",
+            "minLength": 1,
+            "default": "UIP-DBG-01",
+            "markdownDescription": "The Agent netname, also referred to as Agent Id."
+        },
+        "Security": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "business_services": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "default": [],
+                    "markdownDescription": "The list of business services assigned to the debug target."
+                },
+                "read_roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "default": [],
+                    "markdownDescription": "The list of rules assigned to the debug target."
+                },
+                "permission_type": {
+                    "type": "string",
+                    "minLength": 1,
+                    "default": "Task Instance",
+                    "markdownDescription": "The type of permission the debug target is assigned."
+                }
+            },
+            "required": [],
+            "markdownDescription": "Security attributes assigned to the debug target."
+        },
+        "runtime_dir": {
+            "type": "string",
+            "markdownDescription": "Directory where the extension is run",
+            "default": "d:\\Python Project\\Universal Template\\Extension\\vCenter"
+        },
+        "env_vars": {
+            "type": "object",
+            "propertyNames": {
+                "pattern": "^.+"
+            },
+            "minProperties": 1,
+            "minLength": 1,
+            "markdownDescription": "Environment variables to be used by the extension"
+        },
+        "host": {
+            "type": "string",
+            "minLength": 1,
+            "markdownDescription": "```yaml\nField Label: vCenter Host\nField Type: Text\nText Type: Plain\n```"
+        },
+        "credential": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "keyLocation": {
+                    "type": "string"
+                },
+                "key_location": {
+                    "type": "string"
+                },
+                "passphrase": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "user"
+            ],
+            "markdownDescription": "```yaml\nField Label: vCenter Credential\nField Type: Credential\n```\nNote: 'key_location' is only valid for Universal Extension API Level >=1.4.0"
+        },
+        "function": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "Start VM",
+                    "Stop VM",
+                    "Reset VM",
+                    "Suspend VM"
+                ]
+            },
+            "anyOf": [
+                {
+                    "contains": {
+                        "const": "Start VM"
+                    }
+                },
+                {
+                    "contains": {
+                        "const": "Stop VM"
+                    }
+                },
+                {
+                    "contains": {
+                        "const": "Reset VM"
+                    }
+                },
+                {
+                    "contains": {
+                        "const": "Suspend VM"
+                    }
+                }
+            ],
+            "uniqueItems": true,
+            "additionalItems": false,
+            "minItems": 1,
+            "maxItems": 1,
+            "markdownDescription": "```yaml\nField Label: VM Function\nField Type: Choice\nAllow Empty Choice: false\nAllow Multiple Choices: false\nPossible Choices:\n  - Start VM\n  - Stop VM\n  - Reset VM\n  - Suspend VM\n```"
+        },
+        "data_center": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "minLength": 1
+            },
+            "uniqueItems": true,
+            "minItems": 1,
+            "maxItems": 1,
+            "markdownDescription": "```yaml\nField Label: Data Center\nField Type: Dynamic Choice\nAllow Empty Choice: false\nAllow Multiple Choices: false\nDependent Fields:\n  - host\n  - credential\n```"
+        },
+        "esx_host": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "minLength": 1
+            },
+            "uniqueItems": true,
+            "minItems": 1,
+            "maxItems": 1,
+            "markdownDescription": "```yaml\nField Label: ESX Host\nField Type: Dynamic Choice\nAllow Empty Choice: false\nAllow Multiple Choices: false\nDependent Fields:\n  - host\n  - credential\n  - data_center\n```"
+        },
+        "vm_list": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "minLength": 1
+            },
+            "uniqueItems": true,
+            "minItems": 1,
+            "maxItems": 1,
+            "markdownDescription": "```yaml\nField Label: VM Name\nField Type: Dynamic Choice\nAllow Empty Choice: false\nAllow Multiple Choices: false\nDependent Fields:\n  - host\n  - credential\n  - data_center\n  - esx_host\n```"
+        },
+        "data_center_item": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/name"
+                },
+                "log_level": {
+                    "$ref": "#/definitions/LogLevel"
+                },
+                "fields": {
+                    "$ref": "#/definitions/data_center_fields"
+                }
+            },
+            "required": [
+                "fields",
+                "name"
+            ]
+        },
+        "data_center_fields": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "host": {
+                    "$ref": "#/definitions/host"
+                },
+                "credential": {
+                    "$ref": "#/definitions/credential"
+                }
+            },
+            "required": [
+                "host",
+                "credential"
+            ]
+        },
+        "esx_host_item": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/name"
+                },
+                "log_level": {
+                    "$ref": "#/definitions/LogLevel"
+                },
+                "fields": {
+                    "$ref": "#/definitions/esx_host_fields"
+                }
+            },
+            "required": [
+                "fields",
+                "name"
+            ]
+        },
+        "esx_host_fields": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "host": {
+                    "$ref": "#/definitions/host"
+                },
+                "credential": {
+                    "$ref": "#/definitions/credential"
+                },
+                "data_center": {
+                    "$ref": "#/definitions/data_center"
+                }
+            },
+            "required": [
+                "host",
+                "credential",
+                "data_center"
+            ]
+        },
+        "vm_list_item": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/name"
+                },
+                "log_level": {
+                    "$ref": "#/definitions/LogLevel"
+                },
+                "fields": {
+                    "$ref": "#/definitions/vm_list_fields"
+                }
+            },
+            "required": [
+                "fields",
+                "name"
+            ]
+        },
+        "vm_list_fields": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "host": {
+                    "$ref": "#/definitions/host"
+                },
+                "credential": {
+                    "$ref": "#/definitions/credential"
+                },
+                "data_center": {
+                    "$ref": "#/definitions/data_center"
+                },
+                "esx_host": {
+                    "$ref": "#/definitions/esx_host"
+                }
+            },
+            "required": [
+                "host",
+                "credential",
+                "data_center",
+                "esx_host"
+            ]
+        }
+    }
+}

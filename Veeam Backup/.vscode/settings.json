@@ -1,0 +1,12 @@
+{
+    "python.analysis.extraPaths": [
+        "d:\\Python Project\\Universal Template\\Extension\\Veeam Backup\\.uip\\typings"
+    ],
+    "yaml.schemas": {
+        "d:/Python Project/Universal Template/Extension/Veeam Backup/.uip/debug/.schema": "Veeam Backup/**/debug/configurations.yml"
+    },
+    "[yaml]": {
+        "editor.suggest.showClasses": false,
+        "editor.suggest.showWords": false
+    }
+}

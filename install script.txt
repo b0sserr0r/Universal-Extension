@@ -1,0 +1,1 @@
+uip init -t ue-task -e 'extension_name=my_sample_extension'
