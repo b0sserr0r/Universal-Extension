@@ -2,8 +2,5 @@
 __init__
 dateutil
 extension
-numpy
-pandas
 pytz
-tabulate
 tzdata

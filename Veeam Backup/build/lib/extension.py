@@ -8,7 +8,7 @@ import requests
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import time
-
+import base64
 session_id= ""
 job_list = []
 job_id = ""
@@ -16,7 +16,7 @@ job_dict = {}
 taskid = ""
 enterprise_url = ""
 url_backup_session = ""
-
+token = ""
 # df = pd.DataFrame()
 # df['Job Name'] = None
 # df['State'] = None
@@ -34,26 +34,29 @@ class Extension(UniversalExtension):
         super(Extension, self).__init__()
 
 
-    def LogOn(self):
-        global enterprise_url
-        url = enterprise_url + "/api/sessionMngr/?v=latest"
-        headers = {
-        'Accept': 'application/json',
-        'Authorization': 'Basic YWRtaW5pc3RyYXRvcjpQNCQkdy5yZDE='
-        }
+    # def LogOn(fields):
+    #     global enterprise_url
+    #     url = enterprise_url + "/api/sessionMngr/?v=latest"
+    #     user = str(fields.get("credential")["user"])
+    #     password = str(fields.get("credential")["password"])
+    #     token = util.encodebase64(user + ":" + password)
+    #     headers = {
+    #     'Accept': 'application/json',
+    #     'Authorization': 'Basic ' + token
+    #     }
 
-        response = requests.post(url, headers=headers, verify=False)
+    #     response = requests.post(url, headers=headers, verify=False)
 
-        if response.status_code == 201:
-            data = response.json()
-            #session_id = data.get("SessionId")
-            #session_id = response.headers.get('X-RestSvcSessionId')
+    #     if response.status_code == 201:
+    #         data = response.json()
+    #         #session_id = data.get("SessionId")
+    #         #session_id = response.headers.get('X-RestSvcSessionId')
 
-            return response.headers.get('X-RestSvcSessionId')
-        else:
-            print("Failed to log on:", response.status_code)
-            print("Response:", response.text)
-            return None
+    #         return response.headers.get('X-RestSvcSessionId')
+    #     else:
+    #         print("Failed to log on:", response.status_code)
+    #         print("Response:", response.text)
+    #         return None
         
     def ListJob(self):
         global session_id, job_dict, enterprise_url
@@ -81,12 +84,15 @@ class Extension(UniversalExtension):
     def job_list(self, fields):
         global session_id, job_list, enterprise_url
         enterprise_url = str(fields.get('enterprise_manager_url')) #"https://172.16.1.120:9398"
-        session_id = self.LogOn() 
-        job_list = self.ListJob()
+        user = str(fields.get("credential")["user"])
+        password = str(fields.get("credential")["password"])
+        token = util.encodebase64(user + ":" + password)
+        session_id = util.LogOn(token) 
+        job_lists = self.ListJob()
         return ExtensionResult(
                 rc=0,
                 message="Values for choice field: 'jobs_list'",
-                values=job_list
+                values=job_lists
                 ) 
 
     def get_job_uid(self):
@@ -128,11 +134,13 @@ class Extension(UniversalExtension):
             print("Response:", response.text)
             return None
     def GetTaskStatus(self):
-        global session_id, taskid, enterprise_url, url_backup_session
+        global session_id, taskid, enterprise_url, url_backup_session, token
         url = enterprise_url + "/api/tasks/" + taskid
+
+   
         headers = {
             'Accept': 'application/json',
-            'Authorization': 'Basic YWRtaW5pc3RyYXRvcjpQNCQkdy5yZDE=',
+            'Authorization': 'Basic ' + token,
             'X-RestSvcSessionId': str(session_id),
         }
 
@@ -156,11 +164,12 @@ class Extension(UniversalExtension):
                 print("Response:", response.text)
                 break
     def GetBackupDetail(self):
-        global session_id, url_backup_session
+        global session_id, url_backup_session, token
         url = url_backup_session
+    
         headers = {
             'Accept': 'application/json',
-            'Authorization': 'Basic YWRtaW5pc3RyYXRvcjpQNCQkdy5yZDE=',
+            'Authorization': 'Basic ' + token,
             'X-RestSvcSessionId': str(session_id),
         }
 
@@ -189,10 +198,13 @@ class Extension(UniversalExtension):
                 return None
 
     def extension_start(self, fields):
-        global session_id, job_list, job_id, job_dict, enterprise_url
+        global session_id, job_list, job_id, job_dict, enterprise_url, token
 
         enterprise_url = str(fields.get('enterprise_manager_url'))
-        session_id = self.LogOn() 
+        user = str(fields.get("credential")["user"])
+        password = str(fields.get("credential")["password"])
+        token = util.encodebase64(user + ":" + password)
+        session_id = util.LogOn(token) 
         # session_id = self.LogOn() 
         # print("Session " + session_id)
         # job_list = self.ListJob()
@@ -213,3 +225,29 @@ class Extension(UniversalExtension):
         return ExtensionResult(
             unv_output=""
         )
+    
+class util:
+    def encodebase64(str_encode):
+        encoded_bytes = base64.b64encode(str_encode.encode("utf-8"))
+        encoded_str = encoded_bytes.decode("utf-8")
+        return str(encoded_str)
+    def LogOn(token):
+        global enterprise_url
+        url = enterprise_url + "/api/sessionMngr/?v=latest"
+        headers = {
+        'Accept': 'application/json',
+        'Authorization': 'Basic ' + token
+        }
+
+        response = requests.post(url, headers=headers, verify=False)
+
+        if response.status_code == 201:
+            data = response.json()
+            #session_id = data.get("SessionId")
+            #session_id = response.headers.get('X-RestSvcSessionId')
+
+            return response.headers.get('X-RestSvcSessionId')
+        else:
+            print("Failed to log on:", response.status_code)
+            print("Response:", response.text)
+            return None

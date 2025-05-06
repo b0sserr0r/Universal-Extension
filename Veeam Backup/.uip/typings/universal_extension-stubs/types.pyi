@@ -54,11 +54,13 @@ class DynamicChoiceCommandFunction(TypedDict):
 
 class DynamicChoiceCommandJobList(TypedDict):
     enterprise_manager_url: str
+    credential: Credential
     ...
 
 
 class ExtensionFields(TypedDict):
     enterprise_manager_url: str
+    credential: Credential
     function: list
     job_list: list
     ...

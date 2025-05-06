@@ -100,6 +100,9 @@
                 "enterprise_manager_url": {
                     "$ref": "#/definitions/enterprise_manager_url"
                 },
+                "credential": {
+                    "$ref": "#/definitions/credential"
+                },
                 "function": {
                     "$ref": "#/definitions/function"
                 },
@@ -109,6 +112,7 @@
             },
             "required": [
                 "enterprise_manager_url",
+                "credential",
                 "function",
                 "job_list"
             ]
@@ -298,6 +302,34 @@
             "default": "https://localhost:9443",
             "markdownDescription": "```yaml\nField Label: Enterprise Manager URL\nField Type: Text\nText Type: Plain\nDefault: https://localhost:9443\n```"
         },
+        "credential": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "keyLocation": {
+                    "type": "string"
+                },
+                "key_location": {
+                    "type": "string"
+                },
+                "passphrase": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "user"
+            ],
+            "markdownDescription": "```yaml\nField Label: Credential\nField Type: Credential\n```\nNote: 'key_location' is only valid for Universal Extension API Level >=1.4.0"
+        },
         "function": {
             "type": "array",
             "items": {
@@ -328,7 +360,7 @@
             "uniqueItems": true,
             "minItems": 1,
             "maxItems": 1,
-            "markdownDescription": "```yaml\nField Label: Jobs List\nField Type: Dynamic Choice\nAllow Empty Choice: false\nAllow Multiple Choices: false\nDependent Fields:\n  - enterprise_manager_url\n```"
+            "markdownDescription": "```yaml\nField Label: Jobs List\nField Type: Dynamic Choice\nAllow Empty Choice: false\nAllow Multiple Choices: false\nDependent Fields:\n  - enterprise_manager_url\n  - credential\n```"
         },
         "job_list_item": {
             "type": "object",
@@ -355,10 +387,14 @@
             "properties": {
                 "enterprise_manager_url": {
                     "$ref": "#/definitions/enterprise_manager_url"
+                },
+                "credential": {
+                    "$ref": "#/definitions/credential"
                 }
             },
             "required": [
-                "enterprise_manager_url"
+                "enterprise_manager_url",
+                "credential"
             ]
         }
     }
