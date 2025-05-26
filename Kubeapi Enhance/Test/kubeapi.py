@@ -53,6 +53,43 @@ def monitor_kube_job(kubeconfig_path, job_name, namespace="default"):
             w.stop()
 
     # Fetch logs from the associated pod
+    # pods = core_v1.list_namespaced_pod(namespace, label_selector=f"job-name={job_name}")
+    # for pod in pods.items:
+    #     pod_name = pod.metadata.name
+    #     print(f"📄 Logs from pod '{pod_name}':\n")
+    #     try:
+    #         log = core_v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
+    #         print(log)
+    #     except ApiException as e:
+    #         print(f"⚠️ Could not fetch logs for pod '{pod_name}': {e}")
+
+# def get_pods(kubeconfig_path, namespace="default", label_selector=None):
+#     """
+#     Lists pods in the specified namespace using the provided kubeconfig.
+    
+#     :param kubeconfig_path: Path to kubeconfig file
+#     :param namespace: Namespace to query pods from
+#     :param label_selector: Optional label selector string (e.g., 'app=myapp')
+#     """
+#     config.load_kube_config(config_file=kubeconfig_path)
+#     core_v1 = client.CoreV1Api()
+
+#     try:
+#         pods = core_v1.list_namespaced_pod(
+#             namespace=namespace,
+#             label_selector=label_selector or ""
+#         )
+#         print(f"📦 Found {len(pods.items)} pod(s) in namespace '{namespace}':")
+#         for pod in pods.items:
+#             print(f"- {pod.metadata.name} (Status: {pod.status.phase})")
+#     except ApiException as e:
+#         print(f"❌ Error fetching pods: {e}")
+
+def fetch_kube_log(kubeconfig_path, job_name, namespace="default"):
+    """Fetches and prints logs from the pod(s) created by the given Kubernetes Job."""
+    config.load_kube_config(config_file=kubeconfig_path)
+    core_v1 = client.CoreV1Api()
+
     pods = core_v1.list_namespaced_pod(namespace, label_selector=f"job-name={job_name}")
     for pod in pods.items:
         pod_name = pod.metadata.name
@@ -63,27 +100,24 @@ def monitor_kube_job(kubeconfig_path, job_name, namespace="default"):
         except ApiException as e:
             print(f"⚠️ Could not fetch logs for pod '{pod_name}': {e}")
 
-def get_pods(kubeconfig_path, namespace="default", label_selector=None):
-    """
-    Lists pods in the specified namespace using the provided kubeconfig.
-    
-    :param kubeconfig_path: Path to kubeconfig file
-    :param namespace: Namespace to query pods from
-    :param label_selector: Optional label selector string (e.g., 'app=myapp')
-    """
+def delete_kube_job(kubeconfig_path, job_name, namespace="default"):
+    """Deletes the Kubernetes Job and its pods."""
     config.load_kube_config(config_file=kubeconfig_path)
+    batch_v1 = client.BatchV1Api()
     core_v1 = client.CoreV1Api()
 
+    print(f"🧹 Deleting Job '{job_name}' and its pods...")
+    delete_opts = client.V1DeleteOptions(propagation_policy='Foreground')
+
     try:
-        pods = core_v1.list_namespaced_pod(
+        batch_v1.delete_namespaced_job(
+            name=job_name,
             namespace=namespace,
-            label_selector=label_selector or ""
+            body=delete_opts
         )
-        print(f"📦 Found {len(pods.items)} pod(s) in namespace '{namespace}':")
-        for pod in pods.items:
-            print(f"- {pod.metadata.name} (Status: {pod.status.phase})")
+        print(f"✅ Job '{job_name}' deletion initiated.")
     except ApiException as e:
-        print(f"❌ Error fetching pods: {e}")
+        print(f"❌ Failed to delete job '{job_name}': {e}")
 # Example usage:
 if __name__ == "__main__":
     kubeconfig = "D:\\Kubernetes\\Config\\minikube.yaml"
@@ -92,3 +126,5 @@ if __name__ == "__main__":
     #get_pods(kubeconfig, namespace="dev")
     job = start_kube_job(kubeconfig, job_yaml, namespace)
     monitor_kube_job(kubeconfig, job, namespace)
+    fetch_kube_log(kubeconfig, job, namespace)
+    delete_kube_job(kubeconfig, job, namespace)

@@ -52,6 +52,8 @@ class ExtensionFields(TypedDict):
     config: str
     namespace: str
     yaml: str
+    fetch_log: bool
+    delete_job: bool
     ...
 
 

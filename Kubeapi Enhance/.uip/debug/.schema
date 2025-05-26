@@ -102,6 +102,12 @@
                 },
                 "yaml": {
                     "$ref": "#/definitions/yaml"
+                },
+                "fetch_log": {
+                    "$ref": "#/definitions/fetch_log"
+                },
+                "delete_job": {
+                    "$ref": "#/definitions/delete_job"
                 }
             },
             "required": [
@@ -295,6 +301,16 @@
         "yaml": {
             "type": "string",
             "markdownDescription": "```\n# Specify the full path to the script file\n\nField Label: File Yaml\nField Type: Script\n```"
+        },
+        "fetch_log": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "```yaml\nField Label: Fetch Logs\nField Type: Boolean\nDefault: false\n```"
+        },
+        "delete_job": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "```yaml\nField Label: Delete Job After Execute\nField Type: Boolean\nDefault: false\n```"
         }
     }
 }
