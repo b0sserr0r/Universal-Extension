@@ -1,9 +1,11 @@
 {
     "python.analysis.extraPaths": [
-        "d:\\Python Project\\Universal Template\\Extension\\Kubectl Enhance\\.uip\\typings"
+        "d:\\Python Project\\Universal Template\\Extension\\Kubectl Enhance\\.uip\\typings",
+        "d:\\Python Project\\Universal Template\\Extension\\Kubeapi Enhance\\.uip\\typings"
     ],
     "yaml.schemas": {
-        "d:/Python Project/Universal Template/Extension/Kubectl Enhance/.uip/debug/.schema": "Kubectl Enhance/**/debug/configurations.yml"
+        "d:/Python Project/Universal Template/Extension/Kubectl Enhance/.uip/debug/.schema": "Kubectl Enhance/**/debug/configurations.yml",
+        "d:/Python Project/Universal Template/Extension/Kubeapi Enhance/.uip/debug/.schema": "Kubeapi Enhance/**/debug/configurations.yml"
     },
     "[yaml]": {
         "editor.suggest.showClasses": false,

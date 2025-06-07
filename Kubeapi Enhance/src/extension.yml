@@ -1,5 +1,5 @@
 extension:
-  name: ue-kubeeh
+  name: ue-kubeapi
   version: "1.0.0"
   api_level: "1.4.0"
   requires_python: ">=2.6"

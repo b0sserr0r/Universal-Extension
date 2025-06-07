@@ -277,7 +277,7 @@
         "runtime_dir": {
             "type": "string",
             "markdownDescription": "Directory where the extension is run",
-            "default": "d:\\Python Project\\Universal Template\\Extension\\Kubectl Enhance"
+            "default": "d:\\Python Project\\Universal Template\\Extension\\Kubeapi Enhance"
         },
         "env_vars": {
             "type": "object",
@@ -309,8 +309,8 @@
         },
         "delete_job": {
             "type": "boolean",
-            "default": false,
-            "markdownDescription": "```yaml\nField Label: Delete Job After Execute\nField Type: Boolean\nDefault: false\n```"
+            "default": true,
+            "markdownDescription": "```yaml\nField Label: Delete Job before Execute\nField Type: Boolean\nDefault: true\n```"
         }
     }
 }

@@ -1,0 +1,11 @@
+setup.cfg
+setup.py
+src/__init__.py
+src/extension.py
+src/extension.yml
+src/ue_kubectlen.egg-info/PKG-INFO
+src/ue_kubectlen.egg-info/SOURCES.txt
+src/ue_kubectlen.egg-info/dependency_links.txt
+src/ue_kubectlen.egg-info/top_level.txt
+src/ue_kubectlen.egg-info/zip-safe
+test/test.py

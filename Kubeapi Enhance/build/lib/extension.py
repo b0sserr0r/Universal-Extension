@@ -8,6 +8,7 @@ from kubernetes import client, config, utils
 from kubernetes.watch import Watch
 from kubernetes.client.rest import ApiException
 import sys
+import os
 
 class Extension(UniversalExtension):
     """Required class that serves as the entry point for the extension"""
@@ -43,7 +44,7 @@ class Extension(UniversalExtension):
         if not job_name:
             logger.error("No Job definition found in the YAML.")
             raise ValueError("No Job definition found in the YAML.")
-            sys.exit(1)
+            os._exit(1)
 
         return job_name
 
@@ -76,8 +77,6 @@ class Extension(UniversalExtension):
         pods = core_v1.list_namespaced_pod(namespace, label_selector=f"job-name={job_name}")
         for pod in pods.items:
             pod_name = pod.metadata.name
-            logger.debug(f"Job '{job_name}' failed.")
-            print(f"Logs from pod '{pod_name}':\n")
             try:
                 log = core_v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
                 logger.debug(f"Logs from pod {pod_name} : {log}")
@@ -85,7 +84,7 @@ class Extension(UniversalExtension):
             except ApiException as e:
                 logger.error(f"Could not fetch logs for pod '{pod_name}': {e}")
                 print(f"Could not fetch logs for pod '{pod_name}': {e}")
-                sys.exit(1) 
+                os._exit(1) 
 
     def delete_kube_job(self, kubeconfig_path, job_name, namespace="default"):
         """Deletes the Kubernetes Job and its pods."""
@@ -105,9 +104,23 @@ class Extension(UniversalExtension):
             logger.debug(f"Job '{job_name}' deletion initiated.")
             print(f"Job '{job_name}' deletion initiated.")
         except ApiException as e:
-            print(f"Failed to delete job '{job_name}': {e}")
-            logger.error(f"Failed to delete job '{job_name}': {e}")
-            sys.exit(1)
+            print(f"Failed to delete job '{job_name}' is not found")
+            logger.debug(f"Failed to delete job '{job_name}': {e}")
+           
+
+    def get_job_name_from_yaml(self,file_path):
+        with open(file_path) as f:
+            docs = yaml.safe_load_all(f)
+            job_names = []
+
+            for doc in docs:
+                if doc.get("kind") == "Job":
+                    metadata = doc.get("metadata", {})
+                    job_name = metadata.get("name")
+                    if job_name:
+                        job_names.append(job_name)
+
+            return job_names
 
     def extension_start(self, fields):
         kubeconfig = str(fields.get("config"))
@@ -125,16 +138,21 @@ class Extension(UniversalExtension):
         # print(kubeconfig)
         # print(job_yaml)
         # print(namespace)
+        delete_job = str(fields.get("delete_job"))
+        if delete_job == 'True':
+           jobname =self.get_job_name_from_yaml(job_yaml)
+           job_names_string = ", ".join(jobname)
+           self.delete_kube_job(kubeconfig, job_names_string, namespace)
 
+        #Start Job   
         job = self.start_kube_job(kubeconfig, job_yaml, namespace)
 
         fetch_log = str(fields.get("fetch_log"))
-        delete_job = str(fields.get("delete_job"))
+        
         self.monitor_kube_job(kubeconfig, job, namespace)
         if fetch_log == 'True':
            self.fetch_kube_log(kubeconfig, job, namespace)
-        if delete_job == 'True':
-           self.delete_kube_job(kubeconfig, job, namespace)
+        
         return ExtensionResult(
             unv_output=''
         )

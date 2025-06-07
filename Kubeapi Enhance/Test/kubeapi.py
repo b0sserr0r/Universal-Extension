@@ -118,13 +118,30 @@ def delete_kube_job(kubeconfig_path, job_name, namespace="default"):
         print(f"✅ Job '{job_name}' deletion initiated.")
     except ApiException as e:
         print(f"❌ Failed to delete job '{job_name}': {e}")
+
+def get_job_name_from_yaml(file_path):
+        with open(file_path) as f:
+            docs = yaml.safe_load_all(f)
+            job_names = []
+
+            for doc in docs:
+                if doc.get("kind") == "Job":
+                    metadata = doc.get("metadata", {})
+                    job_name = metadata.get("name")
+                    if job_name:
+                        job_names.append(job_name)
+
+            return job_names
 # Example usage:
 if __name__ == "__main__":
-    kubeconfig = "D:\\Kubernetes\\Config\\minikube.yaml"
+    kubeconfig = "D:\\Kubernetes\\Config\\k3s"
     job_yaml = "D:\\Kubernetes\\Job Yaml\\Job1.yaml"
     namespace = "dev"
+    jobname = get_job_name_from_yaml(job_yaml)
+    job_names_string = ", ".join(jobname)
+    print(job_names_string)
     #get_pods(kubeconfig, namespace="dev")
-    job = start_kube_job(kubeconfig, job_yaml, namespace)
-    monitor_kube_job(kubeconfig, job, namespace)
-    fetch_kube_log(kubeconfig, job, namespace)
-    delete_kube_job(kubeconfig, job, namespace)
+    # job = start_kube_job(kubeconfig, job_yaml, namespace)
+    # monitor_kube_job(kubeconfig, job, namespace)
+    # fetch_kube_log(kubeconfig, job, namespace)
+    # delete_kube_job(kubeconfig, job, namespace)

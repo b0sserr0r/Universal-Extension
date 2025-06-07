@@ -9,6 +9,8 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import time
 import base64
+import os
+
 session_id= ""
 job_list = []
 job_id = ""
@@ -188,14 +190,17 @@ class Extension(UniversalExtension):
                     print("Job run result " + jobname  +" is " + state + " " + result)
                     print("Job ")
                     #print(str(df))
-                   
+                    os._exit(1)
                     break
+                elif state == "Success":
+                     print("Job run result " + jobname  +" is " + state + " " + result)
                 else:
                     time.sleep(1)
             else:
                 print("Failed to log on:", response.status_code)
                 print("Response:", response.text)
-                return None
+                os._exit(1)
+                #return None
 
     def extension_start(self, fields):
         global session_id, job_list, job_id, job_dict, enterprise_url, token

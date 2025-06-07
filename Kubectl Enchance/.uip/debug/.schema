@@ -1,0 +1,324 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/UIPDebugConfigurations",
+    "definitions": {
+        "UIPDebugConfigurations": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "properties": {
+                    "$ref": "#/definitions/properties"
+                },
+                "api": {
+                    "$ref": "#/definitions/api"
+                }
+            },
+            "required": [
+                "api"
+            ],
+            "title": "UIPDebugConfigurations"
+        },
+        "api": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "extension_start": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/extension_start_item"
+                    }
+                }
+            },
+            "minProperties": 1,
+            "markdownDescription": "Used to specify the extension APIs that can currently be debugged"
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "agent": {
+                    "$ref": "#/definitions/agent"
+                }
+            },
+            "minProperties": 1,
+            "markdownDescription": "Used to configure agent related properties"
+        },
+        "agent": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "log_level": {
+                    "$ref": "#/definitions/AgentLogLevel"
+                },
+                "otel": {
+                    "$ref": "#/definitions/Otel"
+                },
+                "netname": {
+                    "$ref": "#/definitions/Netname"
+                }
+            }
+        },
+        "extension_start_item": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/name"
+                },
+                "uip": {
+                    "$ref": "#/definitions/uip"
+                },
+                "log_level": {
+                    "$ref": "#/definitions/LogLevel"
+                },
+                "runtime_dir": {
+                    "$ref": "#/definitions/runtime_dir"
+                },
+                "env_vars": {
+                    "$ref": "#/definitions/env_vars"
+                },
+                "fields": {
+                    "$ref": "#/definitions/extension_start_fields"
+                },
+                "security": {
+                    "$ref": "#/definitions/Security"
+                }
+            },
+            "required": [
+                "fields",
+                "name"
+            ]
+        },
+        "extension_start_fields": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "jobname": {
+                    "$ref": "#/definitions/jobname"
+                },
+                "namespace": {
+                    "$ref": "#/definitions/namespace"
+                },
+                "yaml_file": {
+                    "$ref": "#/definitions/yaml_file"
+                },
+                "monitor_job": {
+                    "$ref": "#/definitions/monitor_job"
+                },
+                "fetch_log": {
+                    "$ref": "#/definitions/fetch_log"
+                },
+                "delete_job": {
+                    "$ref": "#/definitions/delete_job"
+                }
+            },
+            "required": [
+                "jobname",
+                "namespace",
+                "yaml_file"
+            ]
+        },
+        "dynamic_choice_commands": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {},
+            "minProperties": 1
+        },
+        "uip": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "is_triggered": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "variables": {
+                    "type": "object",
+                    "propertyNames": {
+                        "pattern": "^.+"
+                    },
+                    "minProperties": 1,
+                    "minLength": 1,
+                    "markdownDescription": "Variables to pass as part of self.uip.task_variables"
+                }
+            }
+        },
+        "name": {
+            "type": "string",
+            "markdownDescription": "Unique identifier for test class"
+        },
+        "LogLevel": {
+            "type": "string",
+            "oneOf": [
+                {
+                    "const": "Inherited"
+                },
+                {
+                    "const": "Trace"
+                },
+                {
+                    "const": "Debug"
+                },
+                {
+                    "const": "Info"
+                },
+                {
+                    "const": "Warn"
+                },
+                {
+                    "const": "Error"
+                },
+                {
+                    "const": "Severe"
+                }
+            ],
+            "markdownDescription": "**Must be one of**:\n- Inherited\n- Trace\n- Debug\n- Info\n- Warn\n- Error\n- Severe",
+            "default": "Inherited"
+        },
+        "AgentLogLevel": {
+            "type": "string",
+            "oneOf": [
+                {
+                    "const": "Trace"
+                },
+                {
+                    "const": "Debug"
+                },
+                {
+                    "const": "Info"
+                },
+                {
+                    "const": "Warn"
+                },
+                {
+                    "const": "Error"
+                }
+            ],
+            "markdownDescription": "**Must be one of**:\n- Trace \n- Debug\n- Info\n- Warn\n- Error\n\n**Default**: Info"
+        },
+        "Otel": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable_tracing": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Whether to enable tracing for the debugger and the Extension worker process"
+                },
+                "export_metrics": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Whether to enable metrics for the Extension worker process"
+                },
+                "trace_endpoint": {
+                    "type": "string",
+                    "default": "http://localhost:4318",
+                    "pattern": "^(http)://.*$",
+                    "markdownDescription": "The OTLP/HTTP url used to export debugger and Extension trace data"
+                },
+                "metrics_endpoint": {
+                    "type": "string",
+                    "default": "http://localhost:4318",
+                    "pattern": "^(http)://.*$",
+                    "markdownDescription": "The OTLP/HTTP url used to export Extension metrics data"
+                },
+                "service_name": {
+                    "type": "string",
+                    "default": "vscode-uip-debugger",
+                    "markdownDescription": "The value of the 'service.name' attribute used to identify the VSCode UIP Debugger in traces",
+                    "minLength": 1
+                },
+                "uip_service_name": {
+                    "type": "string",
+                    "default": "uip/\\${extension_name}",
+                    "markdownDescription": "The value of the 'service.name' attribute used to identify the Extension worker process in traces and metrics. If the value contains '${extension_name}', it will be replaced with the actual extension name defined in extension.yml.",
+                    "minLength": 1
+                }
+            },
+            "required": [],
+            "markdownDescription": "Used to configure Opentelemetry for the VSCode UIP Debugger and the Extension worker process."
+        },
+        "Netname": {
+            "type": "string",
+            "minLength": 1,
+            "default": "UIP-DBG-01",
+            "markdownDescription": "The Agent netname, also referred to as Agent Id."
+        },
+        "Security": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "business_services": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "default": [],
+                    "markdownDescription": "The list of business services assigned to the debug target."
+                },
+                "read_roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "default": [],
+                    "markdownDescription": "The list of rules assigned to the debug target."
+                },
+                "permission_type": {
+                    "type": "string",
+                    "minLength": 1,
+                    "default": "Task Instance",
+                    "markdownDescription": "The type of permission the debug target is assigned."
+                }
+            },
+            "required": [],
+            "markdownDescription": "Security attributes assigned to the debug target."
+        },
+        "runtime_dir": {
+            "type": "string",
+            "markdownDescription": "Directory where the extension is run",
+            "default": "d:\\Python Project\\Universal Template\\Extension\\Kubectl Enchance"
+        },
+        "env_vars": {
+            "type": "object",
+            "propertyNames": {
+                "pattern": "^.+"
+            },
+            "minProperties": 1,
+            "minLength": 1,
+            "markdownDescription": "Environment variables to be used by the extension"
+        },
+        "jobname": {
+            "type": "string",
+            "minLength": 1,
+            "markdownDescription": "```yaml\nField Label: Job Name\nField Type: Text\nText Type: Plain\n```"
+        },
+        "namespace": {
+            "type": "string",
+            "minLength": 1,
+            "markdownDescription": "```yaml\nField Label: Namespace\nField Type: Text\nText Type: Plain\n```"
+        },
+        "yaml_file": {
+            "type": "string",
+            "markdownDescription": "```\n# Specify the full path to the script file\n\nField Label: Yaml File\nField Type: Script\n```"
+        },
+        "monitor_job": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "```yaml\nField Label: Monitor Job\nField Type: Boolean\nDefault: false\n```"
+        },
+        "fetch_log": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "```yaml\nField Label: Fetch Logs\nField Type: Boolean\nDefault: false\n```"
+        },
+        "delete_job": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "```yaml\nField Label: Delete Job before Execute\nField Type: Boolean\nDefault: false\n```"
+        }
+    }
+}
