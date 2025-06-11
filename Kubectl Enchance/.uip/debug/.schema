@@ -94,6 +94,21 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "file_config": {
+                    "$ref": "#/definitions/file_config"
+                },
+                "kube_credential_region": {
+                    "$ref": "#/definitions/kube_credential_region"
+                },
+                "kube_credential_access_key": {
+                    "$ref": "#/definitions/kube_credential_access_key"
+                },
+                "kube_credentia_secret_key": {
+                    "$ref": "#/definitions/kube_credentia_secret_key"
+                },
+                "cluster_name": {
+                    "$ref": "#/definitions/cluster_name"
+                },
                 "jobname": {
                     "$ref": "#/definitions/jobname"
                 },
@@ -114,6 +129,11 @@
                 }
             },
             "required": [
+                "file_config",
+                "kube_credential_region",
+                "kube_credential_access_key",
+                "kube_credentia_secret_key",
+                "cluster_name",
                 "jobname",
                 "namespace",
                 "yaml_file"
@@ -291,6 +311,100 @@
             "minLength": 1,
             "markdownDescription": "Environment variables to be used by the extension"
         },
+        "file_config": {
+            "type": "string",
+            "minLength": 1,
+            "markdownDescription": "```yaml\nField Label: File Config\nField Type: Text\nText Type: Plain\n```"
+        },
+        "kube_credential_region": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "keyLocation": {
+                    "type": "string"
+                },
+                "key_location": {
+                    "type": "string"
+                },
+                "passphrase": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "user"
+            ],
+            "markdownDescription": "```yaml\nField Label: Kubernetes Service Credential Region\nField Type: Credential\n```\nNote: 'key_location' is only valid for Universal Extension API Level >=1.4.0"
+        },
+        "kube_credential_access_key": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "keyLocation": {
+                    "type": "string"
+                },
+                "key_location": {
+                    "type": "string"
+                },
+                "passphrase": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "user"
+            ],
+            "markdownDescription": "```yaml\nField Label: Kube Service Credential Access Key\nField Type: Credential\n```\nNote: 'key_location' is only valid for Universal Extension API Level >=1.4.0"
+        },
+        "kube_credentia_secret_key": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "keyLocation": {
+                    "type": "string"
+                },
+                "key_location": {
+                    "type": "string"
+                },
+                "passphrase": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "user"
+            ],
+            "markdownDescription": "```yaml\nField Label: Kube Service Credential Secret Key\nField Type: Credential\n```\nNote: 'key_location' is only valid for Universal Extension API Level >=1.4.0"
+        },
+        "cluster_name": {
+            "type": "string",
+            "minLength": 1,
+            "markdownDescription": "```yaml\nField Label: Cluster Name\nField Type: Text\nText Type: Plain\n```"
+        },
         "jobname": {
             "type": "string",
             "minLength": 1,
@@ -307,18 +421,18 @@
         },
         "monitor_job": {
             "type": "boolean",
-            "default": false,
-            "markdownDescription": "```yaml\nField Label: Monitor Job\nField Type: Boolean\nDefault: false\n```"
+            "default": true,
+            "markdownDescription": "```yaml\nField Label: Monitor Job\nField Type: Boolean\nDefault: true\n```"
         },
         "fetch_log": {
             "type": "boolean",
-            "default": false,
-            "markdownDescription": "```yaml\nField Label: Fetch Logs\nField Type: Boolean\nDefault: false\n```"
+            "default": true,
+            "markdownDescription": "```yaml\nField Label: Fetch Logs\nField Type: Boolean\nDefault: true\n```"
         },
         "delete_job": {
             "type": "boolean",
-            "default": false,
-            "markdownDescription": "```yaml\nField Label: Delete Job before Execute\nField Type: Boolean\nDefault: false\n```"
+            "default": true,
+            "markdownDescription": "```yaml\nField Label: Delete Job before Execute\nField Type: Boolean\nDefault: true\n```"
         }
     }
 }

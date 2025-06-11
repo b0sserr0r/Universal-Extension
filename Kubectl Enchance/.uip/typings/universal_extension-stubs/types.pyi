@@ -49,6 +49,11 @@ class DBConnection(TypedDict):
 
 
 class ExtensionFields(TypedDict):
+    file_config: str
+    kube_credential_region: Credential
+    kube_credential_access_key: Credential
+    kube_credentia_secret_key: Credential
+    cluster_name: str
     jobname: str
     namespace: str
     yaml_file: str
